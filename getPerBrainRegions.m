@@ -8,10 +8,8 @@ ROI_correct = round(ROI_correct);
 
 %% Assign all ROIs to a region
 PerBrainRegions=struct();
-RegionList={'Thalamus','Cerebellum','Semicircularis','Telencephalon','Tectum','Tegmentum','Habenula','Pretectum','MON','Hindbrain','Stratum'};
-progressbar;
+RegionList={'Thalamus','Cerebellum','Semicircularis','Telencephalon','Tectum','Tegmentum','Habenula','Pretectum','MON','Hindbrain'};
 for i=1:length(RegionList)
-    progressbar(i/length(RegionList));
     regionName=RegionList{i};
     if strcmp(regionName,'Telencephalon')
         Mask=Zbrain_Masks{294,3};

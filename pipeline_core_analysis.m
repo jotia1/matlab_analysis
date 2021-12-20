@@ -5,7 +5,7 @@ function [] = pipeline_core_analysis(pipeline_output_path, fish_number, sep_idxs
 %
 %   Args:
 %       pipeline_output_path - Path to output folder of the pipeline
-%       fish_number - zero-padded fish number of the fish to load (e.g. 05)
+%       fish_number - (string) zero-padded fish number of the fish to load (e.g. 05)
 %       sep_idxs - should be the end frame of each stimuli train
 %
 %   Config structure must contains the following attributes:
@@ -14,11 +14,10 @@ function [] = pipeline_core_analysis(pipeline_output_path, fish_number, sep_idxs
 %       regressor - the regressor to use on the auditory stimuli train
 %
 %   Example usage:
-%       config = struct(); config.sep_idxs = [1200];
 %       pipeline_core_analysis('I:\SCN1LABSYN-Q3714\SPIM\pipeline', '04', [1200]);
 %
 
-analysis_dir = fullfile(pipeline_output_path, sprintf('analysis_%s', fish_number))
+analysis_dir = fullfile(pipeline_output_path, sprintf('analysis_%s', fish_number));
 if ~exist(analysis_dir, 'dir')
     mkdir(analysis_dir);
 end
@@ -33,6 +32,7 @@ else
     % Save result so we don't have to recompute
     save(save_path, 'Suite2p_traces', 'stim_trains', 'ROI_centroids', 'fish_number', '-v7.3');
 end
+return
 
 %% 
 % plot average raw trace and average delta trace
@@ -54,7 +54,7 @@ saveas(gcf, fullfile(analysis_dir, sprintf('raw_vs_DF_traces_fish%s.png', fish_n
 %% Assign each ROI to one of the 11 brain regions
 load('I:\PIPEDATA-Q4414\Zbrain_Masks.mat', 'Zbrain_Masks');
 PerBrainRegions = getPerBrainRegions(Zbrain_Masks, ROI_centroids);
-RegionList={'Thalamus','Cerebellum','Semicircularis','Telencephalon','Tectum','Tegmentum','Habenula','Pretectum','MON','Hindbrain','Stratum'};
+RegionList={'Thalamus','Cerebellum','Semicircularis','Telencephalon','Tectum','Tegmentum','Habenula','Pretectum','MON','Hindbrain'};
 h = figure;
 h.Position = [100, 100, 1180, 1700]./2;
 hold on
@@ -109,6 +109,9 @@ xtickangle(45)
 xticklabels(RegionList)
 xlabel('Region');ylabel('Number of ROIs');
 saveas(gca, fullfile(analysis_dir, sprintf('ROIs_per_region_fish%s.png', fish_number)));
+
+
+return
 
 %% Regression
 regressor = ASD_standard_regressor();
