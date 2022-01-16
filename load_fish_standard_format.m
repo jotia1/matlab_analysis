@@ -13,7 +13,7 @@ function [Suite2p_traces, stim_trains, ROI_centroids, fish_number] = load_fish_s
 %           spontaneous, auditory, visual trains)
 %
 %   Example usage:
-%       [Suite2p_traces, stim_trains, ROI_centroids, fish_number] = load_fish_standard_format('I:\SCN1LABSYN-Q3714\SPIM\pipeline', '04', [1200, 2660]);
+%       [Suite2p_traces, stim_trains, ROI_centroids, fish_number] = load_fish_standard_format('I:\SCN1LABSYN-Q3714\SPIM\pipeline', '04', [1200]);
 %
 
 [Suite2p_traces, ROI_centroids] = load_single_fish(pipeline_output_path, fish_number);

@@ -4,6 +4,8 @@ function [ROI_centroids, fish_ncells, fish_numbers, stim_trains] = load_all_fish
 %
 %
 %
+%   Example usage:
+%       
 
 
 % set up default values (true) for load_s2p/rois, raise error if both false
@@ -19,9 +21,10 @@ end
 
 fish_folders = dir([pipeline_output_path, '\suite2p_*']);
 
-
 % TODO : testing hack
-fish_folders = fish_folders(1:11);
+%fish_folders = fish_folders(1:2);
+%fish_folders(22) = [];  % Remove fish 41 which is missing data
+
 
 num_fish = numel(fish_folders);
 
