@@ -27,7 +27,7 @@ for st = 1 : numel(stim_trains)
     stim_df = DeltaF2(Suite2p_traces(:, last_idx:sep_idx),101,7);
     stim_df(isnan(stim_df))=0;
     stim_trains{st} = stim_df;
-    last_idx = last_idx + sep_idx;
+    last_idx = sep_idx + 1;
 end
 
 % reorganise ANTs ROIs
