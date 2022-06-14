@@ -37,7 +37,7 @@ if ~load_s2p && ~load_ants
     throw(MException('LOAD_ALL_FISH:NothingToLoad', 'load_s2p and load_rois cannot both be false.'))
 end
 
-fish_folders = dir([pipeline_output_path, '\suite2p_*']);
+fish_folders = dir(fullfile(pipeline_output_path, 'suite2p_*'));
 num_fish = numel(fish_folders);
 
 %% Get all fish numbers, padded with leading zeros (e.g. 05 rather than 5)
@@ -54,14 +54,13 @@ Suite2p_traces = [];
 ROI_centroids = [];
 fish_ncells = zeros(num_fish, 1); % number of cells per fish
 
-progressbar();
 for fish_idx = 1:num_fish
     folder = fish_folders(fish_idx).name;
     
     % fish41 is missing data from mecp2
-    if strcmp(folder(19:end), 'fish41') == 1
-        continue  % Skip fish
-    end
+    %if strcmp(folder(19:end), 'fish41') == 1
+    %    continue  % Skip fish
+    %end
     
     fish_number = fish_numbers{fish_idx};
     [fish_Suite2p_traces, fish_ROI_centroids] = load_single_fish(pipeline_output_path, fish_number, load_s2p, load_rois);
@@ -77,7 +76,6 @@ for fish_idx = 1:num_fish
     end
     fish_ncells(fish_idx) = ncells;
     
-    progressbar(fish_idx / num_fish);
 end
 
 

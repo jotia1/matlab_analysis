@@ -30,16 +30,17 @@ if ~exist('load_rois', 'var')
 end
 
 %% Load Suite2p data
-fish_folder = dir([pipeline_output_path, '\suite2p_*fish', fish_number, '*']);
+fish_folder = dir(fullfile(pipeline_output_path, sprintf('suite2p_*fish%s*', fish_number)));
 Suite2p_traces = []; 
 ROI_centroids = [];
 
 % Find number of planes
-nplanes = numel(dir([pipeline_output_path, '\suite2p_*fish', fish_number, '*\plane*']));
+nplanes = numel(dir(fullfile(pipeline_output_path, sprintf('suite2p_*fish%s*', fish_number), 'plane*')));
 
 if load_s2p
     for plane_idx = 0:nplanes-1 % planes index from 0 so subtract 1 from nplanes
-        filename = strcat(pipeline_output_path, '\', fish_folder.name, '\plane', num2str(plane_idx), '\Fall.mat'); %access the matfile of data
+        fprintf('fish%s, plane %d/%d\n', fish_number, plane_idx+1, nplanes);
+        filename = fullfile(pipeline_output_path, fish_folder.name, sprintf('plane%s', num2str(plane_idx)), 'Fall.mat'); %access the matfile of data
         load(filename, 'F', 'iscell'); % just load fluorescene traces and centroid data from the matfile
 
         Suite2p_traces = vertcat(Suite2p_traces, F(iscell(:,1) == 1,:)); % Add the traces to the list
@@ -49,8 +50,8 @@ end
 
 if load_rois
     %% Load ants ROIs for this fish
-    ants_folder = dir([pipeline_output_path, '\ants_*fish', fish_number, '*']);
-    ants_filename = strcat(pipeline_output_path, '\', ants_folder.name, '\ROIs_zbrainspace_', fish_number, '.csv');
+    ants_folder = dir(fullfile(pipeline_output_path, sprintf('ants_*fish%s*', fish_number)));
+    ants_filename = fullfile(pipeline_output_path, ants_folder.name, sprintf('ROIs_zbrainspace_%s.csv', fish_number));
     zbrain_rois = readmatrix(ants_filename);
     zbrain_rois(isnan(zbrain_rois)) = 0;
     ROI_centroids = zbrain_rois(:, 1:3);

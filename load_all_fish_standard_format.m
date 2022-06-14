@@ -1,4 +1,4 @@
-function [ROI_centroids, fish_ncells, fish_numbers, stim_trains] = load_all_fish_standard_format(pipeline_output_path, sep_idxs)
+function [ROI_centroids, fish_ncells, fish_numbers, stim_trains] = load_all_fish_standard_format(pipeline_output_path, sep_idxs, load_s2p, load_ants, reload_all)
 %% LOAD_ALL_FISH_STANDARD_FORMAT - Load all fish s2p and/or ANTs roi results into matlab
 %
 %
@@ -15,14 +15,29 @@ end
 if ~exist('load_ants', 'var')
     load_rois = true;
 end
+if ~exist('reload_all', 'var')
+    reload_all = true;
+end
 if ~load_s2p && ~load_ants
     throw(MException('LOAD_ALL_FISH:NothingToLoad', 'load_s2p and load_rois cannot both be false.'))
 end
 
-fish_folders = dir([pipeline_output_path, '\suite2p_*']);
+
+analysis_folder = fullfile(pipeline_output_path, sprintf('matlab_data'));
+final_output = fullfile(analysis_folder, 'all_fish_std_fmt.mat');
+if ~exist(analysis_folder, "dir")  % if folder doesn't exist, create it
+    mkdir(analysis_folder);
+elseif exist(final_output, 'file') && ~reload_all % if it does exist and we dont need to reload_all
+    load(final_output); % just load everything and give it back
+    return; 
+end
+
+
+fish_folders = dir(fullfile(pipeline_output_path, 'suite2p_*'));
 
 % TODO : testing hack
 %fish_folders = fish_folders(1:2);
+%fprintf('NOTE: left in a hack for testing !!!!!!!!!!!!!!! only using 2 fish')
 %fish_folders(22) = [];  % Remove fish 41 which is missing data
 
 
@@ -47,19 +62,21 @@ for fish_idx = 1:num_fish
     folder = fish_folders(fish_idx).name;
     
     % fish41 is missing data from mecp2
-    if strcmp(folder(19:end), 'fish41') == 1
-        continue  % Skip fish
-    end
+    %if strcmp(folder(19:end), 'fish41') == 1
+    %    continue  % Skip fish
+    %end
+    
     
     fish_number = fish_numbers{fish_idx};
-    matfile_name = fullfile(pipeline_output_path, sprintf('analysis_%s', fish_number), sprintf('raw_fish_%s.mat', fish_number));
-    if exist(matfile_name, 'file')
+    matfile_name = fullfile(analysis_folder, sprintf('raw_fish_std_fmt_%s.mat', fish_number));
+    if exist(matfile_name, 'file') && ~reload_all
         fprintf('Found existing matlab file, loading that (fish%s)\n', fish_number)
-        data = load(matfile_name,'stim_trains', 'ROI_centroids');
-        fish_stim_trains = data.stim_trains;
-        fish_ROI_centroids = data.ROI_centroids;
+        data = load(matfile_name, 'fish_stim_trains', 'fish_ROI_centroids');
+        fish_stim_trains = data.fish_stim_trains;
+        fish_ROI_centroids = data.fish_ROI_centroids;
     else
         [~, fish_stim_trains, fish_ROI_centroids, ~] = load_fish_standard_format(pipeline_output_path, fish_number, sep_idxs);
+        save(matfile_name, 'fish_stim_trains', 'fish_ROI_centroids', '-v7.3');
     end
     
     % Join individual fish with the collective fish
@@ -79,6 +96,6 @@ for fish_idx = 1:num_fish
     
 end
 
-
+save(final_output, 'ROI_centroids', 'fish_ncells', 'fish_numbers', 'stim_trains', '-v7.3');
 
 end

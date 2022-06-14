@@ -37,7 +37,11 @@ ROIs_shuffled(:,2) = ROI_centroids(:,1);
 ROIs_shuffled(:,3) = ROI_centroids(:,3) / 2;
 
 % Create full brain mask
-load('I:\PIPEDATA-Q4414\Zbrain_Masks.mat');
+if ismac
+    load('/Volumes/UQ-Inst-Gateway1/PIPEDATA-Q4414/Zbrain_Masks.mat');
+else
+    load('I:\PIPEDATA-Q4414\Zbrain_Masks.mat');
+end
 Zbrain_AllMask=vertcat(Zbrain_Masks{[1:1:77 79:1:294],3}); %Makes a massive matrix of all the Zbrain regions except the eyes
 Zbrain_AllMask=unique(Zbrain_AllMask,'rows');
 IsInBrainRegion=ismember(round(ROIs_shuffled), Zbrain_AllMask,'rows'); 
