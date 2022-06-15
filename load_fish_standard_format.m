@@ -39,7 +39,9 @@ ROIs_shuffled(:,3) = ROI_centroids(:,3) / 2;
 % Create full brain mask
 if ismac
     load('/Volumes/UQ-Inst-Gateway1/PIPEDATA-Q4414/Zbrain_Masks.mat');
-else
+elseif isunix  % if unix but not mac (Jess) -> should be linux (hpc) or Sarah
+    load('/QRISdata/Q4414/Zbrain_Masks.mat')
+else  % everyone else
     load('I:\PIPEDATA-Q4414\Zbrain_Masks.mat');
 end
 Zbrain_AllMask=vertcat(Zbrain_Masks{[1:1:77 79:1:294],3}); %Makes a massive matrix of all the Zbrain regions except the eyes
