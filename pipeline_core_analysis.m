@@ -32,7 +32,6 @@ else
     % Save result so we don't have to recompute
     save(save_path, 'Suite2p_traces', 'stim_trains', 'ROI_centroids', 'fish_number', '-v7.3');
 end
-return
 
 %% 
 % plot average raw trace and average delta trace
@@ -110,8 +109,6 @@ xticklabels(RegionList)
 xlabel('Region');ylabel('Number of ROIs');
 saveas(gca, fullfile(analysis_dir, sprintf('ROIs_per_region_fish%s.png', fish_number)));
 
-
-return
 
 %% Regression
 regressor = ASD_standard_regressor();
