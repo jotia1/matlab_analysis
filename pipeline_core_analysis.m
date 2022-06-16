@@ -51,7 +51,14 @@ end
 saveas(gcf, fullfile(analysis_dir, sprintf('raw_vs_DF_traces_fish%s.png', fish_number)));
 
 %% Assign each ROI to one of the 11 brain regions
-load('I:\PIPEDATA-Q4414\Zbrain_Masks.mat', 'Zbrain_Masks');
+% Create full brain mask
+if ismac
+    load('/Volumes/UQ-Inst-Gateway1/PIPEDATA-Q4414/Zbrain_Masks.mat');
+elseif isunix  % if unix but not mac (Jess) -> should be linux (hpc) or Sarah
+    load('/QRISdata/Q4414/Zbrain_Masks.mat')
+else  % everyone else
+    load('I:\PIPEDATA-Q4414\Zbrain_Masks.mat');
+end
 PerBrainRegions = getPerBrainRegions(Zbrain_Masks, ROI_centroids);
 RegionList={'Thalamus','Cerebellum','Semicircularis','Telencephalon','Tectum','Tegmentum','Habenula','Pretectum','MON','Hindbrain'};
 h = figure;

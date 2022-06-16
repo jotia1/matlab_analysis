@@ -1,6 +1,12 @@
 function [tx, ty, sx, sy] = getZbrainOutline(RegionList_border)
 
-load('I:\PIPEDATA-Q4414\Zbrain_Masks.mat', 'Zbrain_Masks');
+if ismac
+    load('/Volumes/UQ-Inst-Gateway1/PIPEDATA-Q4414/Zbrain_Masks.mat');
+elseif isunix  % if unix but not mac (Jess) -> should be linux (hpc) or Sarah
+    load('/QRISdata/Q4414/Zbrain_Masks.mat')
+else  % everyone else
+    load('I:\PIPEDATA-Q4414\Zbrain_Masks.mat');
+end
 All_Mask=[]
 Border_masks=struct;
 for i=1:length(RegionList_border);  
